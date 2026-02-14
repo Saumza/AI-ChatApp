@@ -19,9 +19,17 @@ app.use(express.urlencoded({
 }))
 
 app.use(express.json({
-    limit:"100kb"
+    limit: "100kb"
 }))
 
 
 
-export {app}
+
+//routes
+
+app.use("/api/v1/user",)
+app.use("/api/v1/conversation",)
+app.use("/api/v1/chat",)
+
+
+export { app }
