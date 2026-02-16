@@ -7,10 +7,6 @@ const chatSchema = new mongoose.Schema({
         ref: "Conversation",
         required: true
     },
-    model: {
-        type: String,
-        required: true
-    },
     content: {
         type: String,
         required: true
