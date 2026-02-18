@@ -16,8 +16,8 @@ const registerUserValidation = () => {
             .trim()
             .notEmpty()
             .withMessage("Username field can't be Empty")
-            .isLength()
-            .withMessage({ min: 3 }),
+            .isLength({ min: 3 })
+            .withMessage("Username must be at least 3 characters long"),
         body("password")
             .trim()
             .notEmpty()
@@ -44,12 +44,10 @@ const updateUserDetailsValidation = () => {
     return [
         body("username")
             .trim()
-            .notEmpty()
-            .withMessage("username field canot be empty"),
-        body("fullname")
+            .optional({ checkFalsy: true }),
+        body("name")
             .trim()
-            .notEmpty()
-            .withMessage("fullname field cannot be empty")
+            .optional({ checkFalsy: true })
     ]
 }
 

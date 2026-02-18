@@ -13,11 +13,6 @@ connectDB().then(() => {
     mongoose.connection.on("error", () => {
         console.error("Database Connection Error");
     })
-
-    app.get("/message", (req, res) => {
-        res.send("Hello World")
-    })
-
     app.listen(process.env.PORT, () => {
         console.log("Server is running on PORT:", process.env.PORT);
     })

@@ -18,11 +18,12 @@ const sendEmail = async (toEmail, subject, mailContent) => {
     const emailPlainText = mailGenerator.generatePlaintext(mailContent)
 
     const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        secure: false,
         auth: {
-            user: SMTP_USERNAME,
-            pass: SMTP_PASSWORD,
+            user: process.env.SMTP_USERNAME,
+            pass: process.env.SMTP_PASSWORD,
         }
     })
 
@@ -36,6 +37,7 @@ const sendEmail = async (toEmail, subject, mailContent) => {
     try {
         await transporter.sendMail(mailSend)
     } catch (error) {
+        console.log(error);
         throw new APIError(500, "Email Services Failed. Make sure the credentials are provided correctly", error)
     }
 
@@ -48,7 +50,7 @@ const verificationMailgenContent = (username, verificationURL) => {
             name: username,
             intro: "Welcome to our App. We are excited to have you onboard in our app",
             action: {
-                instruction: "To confirm your email, please click on the button below",
+                instructions: "To confirm your email, please click on the button below",
                 button: {
                     color: "#22BC66",
                     text: "Confirm your account",
@@ -66,7 +68,7 @@ const forgotPasswordMailgenContent = (username, confirmationURL) => {
             name: username,
             intro: "You are recieving this email because we have recieved a password request for you account.",
             action: {
-                instruction: "Click the button to reset your password.",
+                instructions: "Click the button to reset your password.",
                 button: {
                     color: "#eb3241",
                     text: "Reset Your Password",

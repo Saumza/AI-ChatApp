@@ -5,11 +5,10 @@ import { APIError } from "../utils/APIError.js";
 
 export const userValidate = (req, res, next) => {
     const errors = validationResult(req)
-    if (errors.isEmpty()) {
-        return next()
-    }
+    if (errors.isEmpty()) return next()
+
     const extractedErrors = []
-    errors.array.map((error) => extractedErrors.push(
+    errors.array().map((error) => extractedErrors.push(
         {
             [error.path]: error.msg
         }

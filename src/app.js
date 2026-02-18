@@ -26,10 +26,10 @@ app.use(express.json({
 
 
 //routes
+import { userRouter } from "./routes/user.route.js"
 
-app.use("/api/v1/user",)
-app.use("/api/v1/conversation",)
-app.use("/api/v1/chat",)
+app.use("/api/v1/users", userRouter)
+
 
 
 export { app }
