@@ -12,11 +12,11 @@ router.route("/register").post(upload.single("avatar"), registerUserValidation()
 router.route("/login").post(upload.none(), userLoginValidation(), userValidate, loginUser)
 router.route("/logout").post(verifyJwt, logoutUser)
 router.route("/verify_email/:verificationToken").patch(verifyEmail)
-router.route("/update_userDetails").patch(verifyJwt, upload.none(), updateUserDetailsValidation(), userValidate, updateUserDetails)
+router.route("/update_userDetails").patch(verifyJwt, upload.single("avatar"), updateUserDetailsValidation(), userValidate, updateUserDetails)
 router.route("/update_password").patch(verifyJwt, upload.none(), changeUserPasswordValidation(), userValidate, changeUserAccountPassword)
 router.route("/forgot_password").post(upload.none(), forgotUserPasswordValidation(), userValidate, userForgotPassword)
 router.route("/verification_forgot_password/:verificationToken").get(verifyForgotPasswordToken)
-router.route("/password_reset").patch(upload.none(), resetUserPasswordValidation(), userValidate, userPasswordReset)
+router.route("/password_reset/:verificationToken").patch(upload.none(), resetUserPasswordValidation(), userValidate, userPasswordReset)
 router.route("/refreshToken").get(refreshToken)
 
 
