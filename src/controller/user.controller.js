@@ -316,12 +316,26 @@ const refreshToken = asyncHandler(async (req, res) => {
         throw new APIError(401, "Unauthorized Request: Token Not Found")
     }
 
-    const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+    let decodedToken
+
+    try {
+        decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+    } catch (error) {
+        throw new APIError(401, "Token Expired. Please login Again")
+    }
+
 
     const user = await User.findById(decodedToken._id)
 
     if (!user) {
         throw new APIError(401, "Invalid Refresh Token")
+    }
+
+    if (incomingRefreshToken !== user.refreshToken) {
+        user.refreshToken = undefined
+        user.save({ validateBeforeSave: false })
+
+        throw new APIError(403, "Account Theft")
     }
 
     const { accessToken, refreshToken } = await generateRefreshAndAccessToken(decodedToken._id)

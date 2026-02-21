@@ -2,12 +2,12 @@ import { GoogleGenAI } from '@google/genai';
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_AI_API_KEY,
-    apiVersion: v1
+    apiVersion: "v1alpha"
 })
 
 
 // 
-const messageStream = async (model, contents, systemPrompt) => {
+const messageStream = async function* (model, contents, systemPrompt) {
 
     let payload = {}
 
@@ -16,13 +16,16 @@ const messageStream = async (model, contents, systemPrompt) => {
             role: "system",
             parts: [{ text: systemPrompt }]
         }
+        // console.log(payload);
     }
 
     payload.contents = contents
+    // console.log(payload);
 
     const response = await ai.models.generateContentStream({
         model,
-        payload
+        systemInstruction: payload.systemInstruction,
+        contents: payload.contents
     })
 
     for await (const chunk of response) {
@@ -33,14 +36,19 @@ const messageStream = async (model, contents, systemPrompt) => {
 }
 
 
-const generateTitle = async (model, contents) => {
-    const response = await ai.models.generateContent({
+const generateTitle = async function* (model, contents) {
+    const response = await ai.models.generateContentStream({
         model,
-        contents
+        contents: {
+            role: "user",
+            parts: [{ text: contents }]
+        }
     })
 
-    if (response.text) {
-        return response.text
+    for await (const chunk of response) {
+        if (chunk.text) {
+            yield chunk.text
+        }
     }
 }
 

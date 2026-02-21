@@ -5,7 +5,12 @@ const chatSendValidation = () => {
         body("content")
             .trim()
             .isEmpty()
-            .withMessage("Content Cannot Be Empty")
+            .withMessage("Content Cannot Be Empty"),
+        body("model")
+            .trim()
+            .isEmpty()
+            .withMessage("Model Cannot Be Empty")
+
     ]
 }
 

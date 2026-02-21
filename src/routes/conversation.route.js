@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { verifyJwt } from "../middleware/auth.middleware.js";
-import { updateConversation } from "../controller/conversation.controller.js";
 import { getAllConversations, updateConversation, deleteConversation, getAllChats } from "../controller/conversation.controller.js"
 
 const router = Router()
