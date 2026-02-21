@@ -7,6 +7,7 @@ const router = Router()
 
 router.use(verifyJwt)
 
-router.route("/chat").get(upload.none(), chat)
+router.route("/").get(upload.none(), chat)
+router.route("/c/:conversationId").get(upload.none(), chat)
 
 export { router as chatRouter }

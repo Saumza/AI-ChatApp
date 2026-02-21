@@ -4,6 +4,7 @@ import { APIResponse } from "../utils/APIResponse.js";
 import { Chat } from "../models/chat.model.js";
 import { Conversation } from "../models/conversation.model.js";
 import { apiProviders } from "../api/index.js";
+import mongoose from "mongoose";
 
 
 export const apiProvidersFinder = (model) => {
@@ -44,15 +45,15 @@ const selectedPrompt = (content) => {
 }
 
 const Prompts = {
-    default: "You are a helpful and knowledgeable AI assistant. Provide clear, accurate, and concise answers. Always think step-by-step and avoid unnecessary complexity",
-    coding: "You are a senior software engineer. Provide optimized, clean, and production-ready code. Always explain the logic briefly before giving the code.",
-    math: "You are a strict math tutor. Provide step-by-step solutions and clear reasoning. Do not skip intermediate steps.",
-    writer: "You are a professional writer. Return well-structured, concise, and polished writing. Use proper tone based on the context.",
-    study: "You are an expert teacher. Explain topics as if teaching to a beginner. Use analogies, bullet points, and simple language.",
-    creative: "You are a creative storyteller. Write vivid and engaging narratives with strong emotions and imagery.",
-    summary: "You are a summarization assistant. Reduce long content into clear, short summaries without losing important meaning.",
-    translation: "You are a professional translator. Translate the text accurately while keeping the original tone and intent.",
-    json: "You are a structured output generator. Always return responses strictly in valid JSON format without explanations. You are a function-calling assistant. Respond ONLY with JSON following the exact schema provided."
+    default: "You are a helpful and knowledgeable AI assistant. Provide clear, accurate, and concise answers. Always think step-by-step and avoid unnecessary complexity. Strictly no empty lines in the end.",
+    coding: "You are a senior software engineer. Provide optimized, clean, and production-ready code. Always explain the logic briefly before giving the code. Strictly no empty lines in the end.",
+    math: "You are a strict math tutor. Provide step-by-step solutions and clear reasoning. Do not skip intermediate steps. Strictly no empty lines in the end.",
+    writer: "You are a professional writer. Return well-structured, concise, and polished writing. Use proper tone based on the context. Strictly no empty lines in the end.",
+    study: "You are an expert teacher. Explain topics as if teaching to a beginner. Use analogies, bullet points, and simple language. Strictly no empty lines in the end.",
+    creative: "You are a creative storyteller. Write vivid and engaging narratives with strong emotions and imagery. Strictly no empty lines in the end.",
+    summary: "You are a summarization assistant. Reduce long content into clear, short summaries without losing important meaning. Strictly no empty lines in the end.",
+    translation: "You are a professional translator. Translate the text accurately while keeping the original tone and intent. Strictly no empty lines in the end.",
+    json: "You are a structured output generator. Always return responses strictly in valid JSON format without explanations. You are a function-calling assistant. Respond ONLY with JSON following the exact schema provided. Strictly no empty lines in the end."
 }
 
 const convertToContent = (history) => {
@@ -74,6 +75,7 @@ const chat = asyncHandler(async (req, res) => {
 
     const { conversationId } = req.params
 
+
     const provider = apiProvidersFinder(model)
     const api = apiProviders[provider]
 
@@ -83,7 +85,7 @@ const chat = asyncHandler(async (req, res) => {
         const systemPrompt = Prompts[mode]
 
         const conversation = new Conversation({
-            userId,
+            userId: mongoose.Types.ObjectId(userId),
             model,
             systemPrompt
         })
@@ -138,13 +140,20 @@ const chat = asyncHandler(async (req, res) => {
         await Chat.create({
             conversationId: conversation._id,
             content: replyBuffer,
-            role: "assistant"
+            role: "model"
         })
-
+        
+        res.status(200)
         res.end()
+        return
     }
 
-    const history = await Chat.findById(conversationId)
+    const history = await Chat.find({
+        conversationId,
+    })
+
+    console.log(history);
+
 
     const contents = convertToContent(history)
 
@@ -160,10 +169,10 @@ const chat = asyncHandler(async (req, res) => {
     })
 
     let buffer = ""
-    const reply = await api.messageStream({
+    const reply = await api.messageStream(
         model,
         contents
-    })
+    )
 
     for await (const text of reply) {
         buffer += text
@@ -173,10 +182,12 @@ const chat = asyncHandler(async (req, res) => {
     await Chat.create({
         conversationId,
         content: buffer,
-        role: "assistant"
+        role: "model"
     })
 
+    res.status(200)
     res.end()
+    return
 
 })
 
