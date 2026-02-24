@@ -64,7 +64,7 @@ const userRegistration = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false })
 
 
-    const verificationMailContent = verificationMailgenContent(username, `${req.protocol}://${req.host}/api/v1/user/verify_email/:${hashedToken}`)
+    const verificationMailContent = verificationMailgenContent(username, `${req.protocol}://${req.host}/:${hashedToken}`)
 
     await sendEmail(
         email,
@@ -173,7 +173,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
         .status(200)
         .json(
             new APIResponse(
-                200, { user, isEmailVerified: true }, "User Verified Successfully"
+                200, { isEmailVerified: true }, "User Verified Successfully"
             )
         )
 
@@ -262,7 +262,7 @@ const userForgotPassword = asyncHandler(async (req, res) => {
     }
 
     const { hashedToken, expiresIn } = await user.generateTemporaryToken()
-    const forgotPasswordContent = forgotPasswordMailgenContent(user.username, `${req.protocol}://${req.host}/api/v1/users/verification_forgot_password/${hashedToken}`)
+    const forgotPasswordContent = forgotPasswordMailgenContent(user.username, `${req.protocol}://${req.host}/reset_password/${hashedToken}`)
     user.forgotPasswordVerificationToken = hashedToken
     user.forgotPasswordVerificationExpiry = expiresIn
     await user.save({ validateBeforeSave: false })

@@ -1,4 +1,4 @@
-import axios from "./axios.js/index.js"
+import axios from "./axios.js"
 
 class conversationService {
     constructor(baseUrl = "/api/v1/conversation") {
