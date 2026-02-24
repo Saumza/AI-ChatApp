@@ -1,0 +1,36 @@
+# Dependency directories
+node_modules/
+/jspm_packages/
+
+# Distribution/Build directories
+/dist/
+/build/
+/out-tsc/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment variables and secrets
+.env
+.DS_Store # macOS system files
+
+# Editor or OS generated files
+.idea/ # IDE specific files
+.vscode/
+*.suo
+*.user
+*.cas transform.conf
+.eslintcache
+
+# Testing and coverage
+/coverage/
+
+# TypeScript cache
+.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
