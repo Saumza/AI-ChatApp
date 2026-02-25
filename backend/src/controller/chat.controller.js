@@ -142,7 +142,7 @@ const chat = asyncHandler(async (req, res) => {
             content: replyBuffer,
             role: "model"
         })
-        
+
         res.status(200)
         res.end()
         return
@@ -187,7 +187,14 @@ const chat = asyncHandler(async (req, res) => {
 
     res.status(200)
     res.end()
-    return
+
+    // for updating the Conversation Document
+    await Conversation.findByIdAndUpdate(
+        conversationId,
+        {
+            updatedAt: new Date()
+        }
+    )
 
 })
 

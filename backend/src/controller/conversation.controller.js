@@ -14,7 +14,7 @@ const getAllConversations = asyncHandler(async (req, res) => {
         throw new APIError(401, "Not Valid Object")
     }
 
-    const conversation = await Conversation.find({ userId }).sort({ createdAt: -1 })
+    const conversation = await Conversation.find({ userId }).sort({ updatedAt: -1 })
 
     if (conversation.length === 0) {
         return res.status(200).json(new APIResponse(200, {}, "No Conversations Available"))
@@ -103,5 +103,22 @@ const getAllChats = asyncHandler(async (req, res) => {
         .json(new APIResponse(200, chats, "History Fetched Successfully"))
 })
 
+const getConversation = asyncHandler(async (req, res) => {
+    const { conversationId } = req.params
+    if (!conversationId) {
+        throw new APIError(404, "Required Credentials Not Provided")
+    }
 
-export { getAllConversations, updateConversation, deleteConversation, getAllChats }
+    const conversation = await Conversation.findOne({
+        conversationId
+    }).select("-createdAt -systemPrompt -model")
+
+    if (!conversation) {
+        throw new APIError(404, "Conversation Not Found")
+    }
+
+    return res.status(200).json(new APIResponse(200, conversation, "Conversation Fetched Successfully"))
+
+})
+
+export { getAllConversations, updateConversation, deleteConversation, getAllChats, getConversation }
