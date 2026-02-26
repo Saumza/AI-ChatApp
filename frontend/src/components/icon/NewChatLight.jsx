@@ -32,4 +32,4 @@ function NewChatLight() {
     )
 }
 
-export default NewChat
+export default NewChatLight

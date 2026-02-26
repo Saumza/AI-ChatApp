@@ -22,6 +22,7 @@ export function InputField({
             <Input
                 id={id}
                 type={type}
+                ref={ref}
                 placeholder={placeholder}
                 className={classname}
                 {...props}
