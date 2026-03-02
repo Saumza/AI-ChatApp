@@ -28,10 +28,13 @@ const conversationSlice = createSlice({
         },
         activeConversation: (state, action) => {
             state.activeConversationId = action.payload
+        },
+        sortedConversation: (state) => {
+            [...state.conversations].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
         }
     }
 })
 
 
-export const { activeConversation, addOrUpdateConversation, deleteConversation, setConversations } = conversationSlice.actions
+export const { activeConversation, addOrUpdateConversation, deleteConversation, setConversations, sortedConversation } = conversationSlice.actions
 export const conversationReducer = conversationSlice.reducer

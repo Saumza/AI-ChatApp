@@ -11,7 +11,7 @@ const getAllConversations = asyncHandler(async (req, res) => {
     const userId = req.user?._id
 
     if (!isValidObjectId(userId)) {
-        throw new APIError(401, "Not Valid Object")
+        throw new APIError(401, "Not Valid ObjectId")
     }
 
     const conversation = await Conversation.find({ userId }).sort({ updatedAt: -1 })

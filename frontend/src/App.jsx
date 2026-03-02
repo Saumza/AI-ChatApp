@@ -1,19 +1,16 @@
 import { useState } from 'react'
-import NewChatLight from './components/icon/NewChatLight'
-import NewChatDark from './components/icon/NewChatDark'
+import SidebarComponent from "./components/sidebar/SidebarComponent"
+import { RenameModal } from './components/RenameModal'
+import Login from './components/Login'
+import SignUp from './components/Signup'
+import UpdateDetailsModal from './components/UpdateDetailsModal'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <div >
-      <div className="block dark:hidden">
-        <NewChatLight />
-      </div>
-
-      <div className="hidden dark:block">
-        <NewChatDark />
-      </div>
+      <SidebarComponent />
     </div>
   )
 }

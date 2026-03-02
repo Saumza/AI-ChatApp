@@ -4,7 +4,7 @@ class authentication {
     constructor(baseUrl = "/api/v1/users") {
         this.baseUrl = baseUrl
     }
-    async createAccount({ formdata }) {
+    async createAccount(formdata) {
         try {
             const userAccount = await axios.post(`${this.baseUrl}/register`, formdata, {
                 headers: {
@@ -25,7 +25,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
@@ -40,7 +40,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
@@ -59,7 +59,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
@@ -75,15 +75,15 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
-    async updateDetails({ username, name }) {
+    async updateDetails(formdata) {
         try {
-            return await axios.patch(`${this.baseUrl}/update_userDetails`, { username, name }, {
+            return await axios.patch(`${this.baseUrl}/update_userDetails`, formdata, {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "multipart/form-data"
                 }
             })
         } catch (error) {
@@ -94,7 +94,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
@@ -113,7 +113,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
@@ -132,11 +132,11 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
-    async verificationToken({ verificationToken }) {
+    async verificationPasswordToken({ verificationToken }) {
         try {
             return await axios.get(`${this.baseUrl}/verification_forgot_password/${verificationToken}`)
         } catch (error) {
@@ -147,7 +147,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
@@ -168,7 +168,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 
@@ -183,7 +183,7 @@ class authentication {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-            return "Error"
+            throw error
         }
     }
 

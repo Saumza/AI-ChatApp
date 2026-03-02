@@ -64,7 +64,7 @@ const userRegistration = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false })
 
 
-    const verificationMailContent = verificationMailgenContent(username, `${req.protocol}://${req.host}/:${hashedToken}`)
+    const verificationMailContent = verificationMailgenContent(username, `${req.protocol}://${req.host}/verifyEmail/:${hashedToken}`)
 
     await sendEmail(
         email,
@@ -141,7 +141,7 @@ const logoutUser = asyncHandler(async (req, res) => {
         .clearCookie("accessToken", options)
         .clearCookie("refreshToken", options)
         .json(
-            new APIResponse(200, "User LoggedOut Successfully")
+            new APIResponse(200, true, "User LoggedOut Successfully")
         )
 })
 
@@ -262,7 +262,7 @@ const userForgotPassword = asyncHandler(async (req, res) => {
     }
 
     const { hashedToken, expiresIn } = await user.generateTemporaryToken()
-    const forgotPasswordContent = forgotPasswordMailgenContent(user.username, `${req.protocol}://${req.host}/reset_password/${hashedToken}`)
+    const forgotPasswordContent = forgotPasswordMailgenContent(user.username, `${req.protocol}://${req.host}/resetPassword/${hashedToken}`)
     user.forgotPasswordVerificationToken = hashedToken
     user.forgotPasswordVerificationExpiry = expiresIn
     await user.save({ validateBeforeSave: false })
