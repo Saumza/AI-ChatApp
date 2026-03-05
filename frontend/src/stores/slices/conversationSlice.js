@@ -17,7 +17,7 @@ const conversationSlice = createSlice({
         addOrUpdateConversation: (state, action) => {
             const index = state.conversations.findIndex((conversation) => conversation._id === action.payload._id)
             if (index !== -1) {
-                state.conversations[index] = action.payload
+                state.conversations[index].title += action.payload.title
             }
             else {
                 state.conversations.push(action.payload)

@@ -71,9 +71,7 @@ const convertToContent = (history) => {
 const chat = asyncHandler(async (req, res) => {
     const userId = req.user?._id
 
-    const { model, content } = req.body
-
-    const { conversationId } = req.params
+    const { model, content, conversationId } = req.body
 
 
     const provider = apiProvidersFinder(model)
@@ -84,11 +82,17 @@ const chat = asyncHandler(async (req, res) => {
         const mode = selectedPrompt(content)
         const systemPrompt = Prompts[mode]
 
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+
         const conversation = new Conversation({
-            userId: mongoose.Types.ObjectId(userId),
+            userId: new mongoose.Types.ObjectId(userId),
             model,
             systemPrompt
         })
+
+        res.write(`event: conversation\ndata:${conversation._id}\n\n`)
 
         await Chat.create({
             conversationId: conversation._id,
@@ -96,9 +100,6 @@ const chat = asyncHandler(async (req, res) => {
             role: "user"
         })
 
-        res.setHeader("Content-Type", "text/event-stream");
-        res.setHeader("Cache-Control", "no-cache");
-        res.setHeader("Connection", "keep-alive");
 
         let buffer = ""
         const title = await api.generateTitle(
@@ -134,6 +135,8 @@ const chat = asyncHandler(async (req, res) => {
             // if (!text || text.trim() === "") continue;
             replyBuffer += text
             res.write(`event: reply\ndata:${text}\n\n`)
+            console.log(text);
+
         }
         console.log(replyBuffer);
 
@@ -168,6 +171,10 @@ const chat = asyncHandler(async (req, res) => {
         role: "user"
     })
 
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
     let buffer = ""
     const reply = await api.messageStream(
         model,
@@ -198,4 +205,30 @@ const chat = asyncHandler(async (req, res) => {
 
 })
 
-export { chat }
+
+const getChatHistory = asyncHandler(async (req, res) => {
+    const userId = req.user?._id
+
+    const { conversationId } = req.params
+
+    if (!conversationId) {
+        throw new APIError(400, "ConversationId is required")
+    }
+
+    const conversation = await Conversation.findOne({
+        _id: conversationId,
+        userId
+    })
+
+    if (!conversation) {
+        throw new APIError(404, "Conversation Not Found")
+    }
+
+    const chats = await Chat.find({
+        conversationId
+    }).sort({ createdAt: 1 })
+
+    return res.status(200).json(new APIResponse(200, chats, "Chats Fetched Successfully"))
+})
+
+export { chat, getChatHistory }

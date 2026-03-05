@@ -136,155 +136,152 @@ function SidebarComponent() {
     }
 
     return (
-        <div>
-            <SidebarProvider>
+        <>
 
-                <div className="md:hidden p-2">
-                    <SidebarTrigger />
-                </div>
-                <Sidebar
-                    collapsible="icon"
-                    className="md:static md:block"
-                >
-                    <SidebarHeader className="hidden md:flex items-end">
-                        {/* DESKTOP COLLAPSE BUTTON */}
-                        <SidebarTrigger />
-                    </SidebarHeader>
+            <div className="md:hidden fixed top-3 left-3 z-50">
+                <SidebarTrigger className="bg-background border shadow-sm hover:bg-accent" />
+            </div>
+            <Sidebar
+                collapsible="icon"
+                className="md:static md:block"
+            >
+                <SidebarHeader className="hidden md:flex items-end">
+                    {/* DESKTOP COLLAPSE BUTTON */}
+                    <SidebarTrigger className="hover:bg-accent transition-colors" />
+                </SidebarHeader>
 
-                    <SidebarMenu className="p-3">
-                        {/* NEW CHAT */}
-                        <SidebarMenuItem key="/">
-                            <SidebarMenuButton asChild className="p-0">
-                                <Link to="/" className="flex items-center">
-                                    <div className="flex items-center justify-center size-8">
+                <SidebarMenu className="p-3">
+                    {/* NEW CHAT */}
+                    <SidebarMenuItem key="/">
+                        <SidebarMenuButton
+                            asChild
+                            className="w-full h-11 rounded-xl transition-all duration-200 hover:bg-accent/80 active:scale-95 group"
+                        >
+                            <Link to="/" className="flex items-center gap-3 px-3">
+                                <div className="flex items-center justify-center transition-transform">
+                                    <div className="block dark:hidden"><NewChatLight /></div>
+                                    <div className="hidden dark:block"><NewChatDark /></div>
+                                </div>
+                                <span className="group-data-[collapsible=icon]:hidden font-giest font-semibold text-[0.95rem]">
+                                    New Chat
+                                </span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
 
-                                        <div className="block dark:hidden"><NewChatLight className="block dark:hidden" /></div>
-                                        <div className="hidden dark:block"><NewChatDark className="hidden dark:block" /></div>
-                                    </div>
-                                    <span className="group-data-[collapsible=icon]:hidden font-giest">
-                                        New Chat
+                    <div className="group-data-[collapsible=icon]:hidden my-2 px-3">
+                        <p className="text-[.875rem] font-giest uppercase tracking-widest text-muted-foreground/60">Chats</p>
+                    </div>
+
+
+                    {/* CONVERSATIONS */}
+                    {conversations.map((conversation) => (
+                        <SidebarMenuItem key={conversation._id} className="relative">
+                            <SidebarMenuButton asChild>
+                                <Link
+                                    to={`/c/${conversation._id}`}
+                                    className="flex items-center gap-2"
+                                    onClick={() => dispatch(activeConversation(conversation._id))}
+                                >
+                                    <span className="group-data-[collapsible=icon]:hidden font-giest font-medium text-[.9]">
+                                        {conversation.title}
                                     </span>
                                 </Link>
                             </SidebarMenuButton>
+
+                            {/* DROPDOWN */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <SidebarMenuAction
+                                        showOnHover
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <MoreHorizontal className="w-4 h-4" />
+                                    </SidebarMenuAction>
+                                </DropdownMenuTrigger>
+
+                                <DropdownMenuContent
+                                    align="end"
+                                    side="right"
+                                    className="w-48 rounded-md shadow-lg"
+                                >
+                                    <DropdownMenuItem onClick={() => deleteHandler(conversation._id)}>
+                                        <Trash className="w-4 h-4 mr-2" />
+                                        <span className='font-giest text-[.875rem]'>
+                                            Delete
+                                        </span>
+                                    </DropdownMenuItem>
+
+                                    <DropdownMenuItem onClick={() => renameHandler(conversation)}>
+                                        <Pencil className="w-4 h-4 mr-2" />
+                                        <span className='font-giest text-[.875rem]'>
+                                            Rename
+                                        </span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                                <RenameModal
+                                    open={openRenameModal}
+                                    onOpenChange={setOpenRenameModal}
+                                    title={selectedTitle}
+                                    conversationId={selectedId}
+                                />
+                            </DropdownMenu>
                         </SidebarMenuItem>
-
-
-                        {/* CONVERSATIONS */}
-                        {conversations.map((conversation) => (
-                            <SidebarMenuItem key={conversation._id} className="relative">
-                                <SidebarMenuButton asChild>
-                                    <Link
-                                        to={`/c/${conversation._id}`}
-                                        className="flex items-center gap-2"
-                                        onClick={() => dispatch(activeConversation(conversation._id))}
-                                    >
-                                        <span className="group-data-[collapsible=icon]:hidden font-giest font-medium">
-                                            {conversation.title}
-                                        </span>
-                                    </Link>
-                                </SidebarMenuButton>
-
-                                {/* DROPDOWN */}
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <SidebarMenuAction
-                                            showOnHover
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <MoreHorizontal className="w-4 h-4" />
-                                        </SidebarMenuAction>
-                                    </DropdownMenuTrigger>
-
-                                    <DropdownMenuContent
-                                        align="end"
-                                        side="right"
-                                        className="w-48 rounded-md shadow-lg"
-                                    >
-                                        <DropdownMenuItem onClick={() => deleteHandler(conversation._id)}>
-                                            <Trash className="w-4 h-4 mr-2" />
-                                            <span className='font-giest text-[.875rem]'>
-                                                Delete
-                                            </span>
-                                        </DropdownMenuItem>
-
-                                        <DropdownMenuItem onClick={() => renameHandler(conversation)}>
-                                            <Pencil className="w-4 h-4 mr-2" />
-                                            <span className='font-giest text-[.875rem]'>
-                                                Rename
-                                            </span>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                    <RenameModal
-                                        open={openRenameModal}
-                                        onOpenChange={setOpenRenameModal}
-                                        title={selectedTitle}
-                                        conversationId={selectedId}
-                                    />
-                                </DropdownMenu>
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                    <SidebarFooter className="mt-auto">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <div
-                                    className="flex items-center gap-3 p-2 cursor-pointer rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                                    <img src="https://i.pinimg.com/736x/9d/3a/61/9d3a61e9a5c55ea8d0ae413ce0986753.jpg" alt="avatar" className="w-10 h-10 rounded-full object-cover" />
-                                    <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-                                        <span className="text-sm font-medium font-giest">saumyajeet</span>
-                                        <span className="text-xs text-muted-foreground font-giest">
-                                            s@gmail.com
-                                        </span>
-                                    </div>
-                                    <ChevronsUpDown className="size-4 ml-auto group-data-[collapsible=icon]:hidden" />
-                                </div>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end"
-                                side="right"
-                                className="w-fit rounded-xl p-0 overflow-hidden">
-                                <div className="flex items-center gap-3 p-3 border-b">
-                                    <img
-                                        src="https://i.pinimg.com/736x/9d/3a/61/9d3a61e9a5c55ea8d0ae413ce0986753.jpg"
-                                        className="w-10 h-10 rounded-full object-cover"
-                                        alt="avatar"
-                                    />
-
-                                    <div>
-                                        <p className="font-medium font-giest text-[0.9rem]">saumyajeet</p>
-                                        <p className="text-xs font-giest text-muted-foreground">s@gmail.com</p>
-                                    </div>
-                                </div>
-                                <DropdownMenuItem className="px-4 py-2 gap-0" onClick={() => setOpenUpdateModal(true)}>
-                                    <Edit2Icon className="size-4 mr-3" />
-                                    <span className='text-sm font-giest'>
-                                        Edit Profile
+                    ))}
+                </SidebarMenu>
+                <SidebarFooter className="mt-auto">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <div
+                                className="flex items-center gap-3 p-2 cursor-pointer rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                                <img src="https://i.pinimg.com/736x/9d/3a/61/9d3a61e9a5c55ea8d0ae413ce0986753.jpg" alt="avatar" className="w-10 h-10 rounded-full object-cover" />
+                                <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+                                    <span className="text-sm font-medium font-giest">saumyajeet</span>
+                                    <span className="text-xs text-muted-foreground font-giest">
+                                        s@gmail.com
                                     </span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="px-4 py-2 gap-0" onClick={() => logoutHandler()}>
-                                    <LogOutIcon className="size-4 mr-3" />
-                                    <span className='text-sm font-giest'>
-                                        Log Out
-                                    </span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                            <UpdateDetailsModal
-                                open={openUpdateModal}
-                                onOpenChange={setOpenUpdateModal}
-                                updateSubmitHandler={updateSubmitHandler}
-                                updateHandler={updateHandler}
-                            />
-                        </DropdownMenu>
-                    </SidebarFooter>
-                </Sidebar>
+                                </div>
+                                <ChevronsUpDown className="size-4 ml-auto group-data-[collapsible=icon]:hidden" />
+                            </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end"
+                            side="right"
+                            className="w-fit rounded-xl p-0 overflow-hidden">
+                            <div className="flex items-center gap-3 p-3 border-b">
+                                <img
+                                    src="https://i.pinimg.com/736x/9d/3a/61/9d3a61e9a5c55ea8d0ae413ce0986753.jpg"
+                                    className="w-10 h-10 rounded-full object-cover"
+                                    alt="avatar"
+                                />
 
-                {/* MAIN CONTENT AREA */}
-                <SidebarInset>
-                    <div className="p-4 md:p-10 text-white">
-                        This is the main content area
-                    </div>
-                </SidebarInset>
-            </SidebarProvider>
-        </div >
+                                <div>
+                                    <p className="font-medium font-giest text-[0.9rem]">saumyajeet</p>
+                                    <p className="text-xs font-giest text-muted-foreground">s@gmail.com</p>
+                                </div>
+                            </div>
+                            <DropdownMenuItem className="px-4 py-2 gap-0" onClick={() => setOpenUpdateModal(true)}>
+                                <Edit2Icon className="size-4 mr-3" />
+                                <span className='text-sm font-giest'>
+                                    Edit Profile
+                                </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="px-4 py-2 gap-0" onClick={() => logoutHandler()}>
+                                <LogOutIcon className="size-4 mr-3" />
+                                <span className='text-sm font-giest'>
+                                    Log Out
+                                </span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                        <UpdateDetailsModal
+                            open={openUpdateModal}
+                            onOpenChange={setOpenUpdateModal}
+                            updateSubmitHandler={updateSubmitHandler}
+                            updateHandler={updateHandler}
+                        />
+                    </DropdownMenu>
+                </SidebarFooter>
+            </Sidebar>
+        </ >
     )
 }
 

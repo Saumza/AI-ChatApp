@@ -1,9 +1,9 @@
 import { APIError } from "../utils/APIError.js";
-import { chatSendValidation } from "../validations/chat.validation.js";
+import { validationResult } from "express-validator";
 
 
 export const chatValidate = (req, res, next) => {
-    const errors = chatSendValidation(req)
+    const errors = validationResult(req)
     if (errors.isEmpty()) return next()
 
     const extractedErrors = []
