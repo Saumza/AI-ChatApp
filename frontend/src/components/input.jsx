@@ -4,7 +4,7 @@ import { Input } from "./ui/input.jsx";
 export function InputField({
     label,
     type,
-    classname,
+    className,
     ref,
     placeholder,
     ...props
@@ -24,7 +24,7 @@ export function InputField({
                 type={type}
                 ref={ref}
                 placeholder={placeholder}
-                className={classname}
+                className={className}
                 {...props}
             />
 

@@ -6,25 +6,38 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { useForm } from 'react-hook-form';
 import { Field, FieldContent, FieldLabel } from './ui/field';
 import { conversation } from '@/services/conversation';
-import { addOrUpdateConversation } from '@/stores/slices/conversationSlice';
+import { addOrUpdateConversation, updateConversation } from '@/stores/slices/conversationSlice';
 
 
 
-function RenameModal({ open, onOpenChange, title }) {
+function RenameModal({ open, onOpenChange, title, conversationId }) {
 
     const [value, setValue] = useState()
     const dispatch = useDispatch()
+    const { register, handleSubmit, reset } = useForm({
+        defaultValues: {
+            title: ""
+        }
+    })
 
-    const conversationid = useSelector((state) => state.conversation.activeConversationId)
-    const { register, handleSubmit } = useForm()
+    useEffect(() => {
+        if (title) {
+            reset({ title })
+        }
+    }, [title, reset])
 
 
 
     const submitHandler = async (data) => {
         try {
-            const response = await conversation.update({ title: data.title, conversationid })
+            const response = await conversation.update({ title: data.title, conversationId })
+            console.log(response);
+
             if (response) {
-                dispatch(addOrUpdateConversation(response))
+                dispatch(updateConversation({
+                    _id: response.data.data._id,
+                    title: response.data.data.title
+                }))
                 onOpenChange(false)
 
             }
@@ -49,7 +62,6 @@ function RenameModal({ open, onOpenChange, title }) {
                             <FieldContent>
                                 <InputField
                                     type="text"
-                                    value={title}
                                     {...register("title")}
                                 />
                             </FieldContent>

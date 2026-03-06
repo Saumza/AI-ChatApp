@@ -11,7 +11,7 @@ const conversationSlice = createSlice({
     name: "conversation",
     initialState,
     reducers: {
-        setConversations: (state, action) => {
+        setConversation: (state, action) => {
             state.conversations = action.payload
         },
         addOrUpdateConversation: (state, action) => {
@@ -31,10 +31,19 @@ const conversationSlice = createSlice({
         },
         sortedConversation: (state) => {
             [...state.conversations].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        },
+        updateConversation: (state, action) => {
+            const index = state.conversations.findIndex((conversation) => conversation._id === action.payload._id)
+            if (index !== -1) {
+                state.conversations[index].title = action.payload.title
+            }
+            else {
+                state.conversations.push(action.payload)
+            }
         }
     }
 })
 
 
-export const { activeConversation, addOrUpdateConversation, deleteConversation, setConversations, sortedConversation } = conversationSlice.actions
+export const { activeConversation, addOrUpdateConversation, deleteConversation, setConversation, sortedConversation, updateConversation } = conversationSlice.actions
 export const conversationReducer = conversationSlice.reducer

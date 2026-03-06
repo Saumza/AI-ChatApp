@@ -9,7 +9,13 @@ api.interceptors.response.use(
     (response) => { return response }, //anything withing the status code of 200 will be send via this response handler
     async (error) => {
         const originalRequest = error.config
-        if (error.response?.statusCode === 401 && !originalRequest._retry) {
+
+        // if refresh token request itself fails
+        if (originalRequest.url.includes("/refreshToken")) {
+            throw error
+        }
+
+        if (error.response?.status=== 401 && !originalRequest._retry) {
             originalRequest._retry = true
             //this will automatically refresh the token
             try {

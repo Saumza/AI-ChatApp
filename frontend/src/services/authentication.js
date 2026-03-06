@@ -174,7 +174,7 @@ class authentication {
 
     async refreshToken() {
         try {
-            await axios.get(`${this.baseUrl}/refreshToken`)
+            return await axios.get(`${this.baseUrl}/refreshToken`)
         } catch (error) {
             if (error.response) {
                 console.log("Token Refresh Error: ", error.response);

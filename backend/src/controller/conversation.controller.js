@@ -52,7 +52,7 @@ const updateConversation = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new APIResponse(200, conversation.title, "Title Updated Successfully")
+            new APIResponse(200, conversation, "Title Updated Successfully")
         )
 })
 

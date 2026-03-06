@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { SidebarInset, SidebarProvider } from './ui/Sidebar'
 import { ScrollArea } from './ui/scroll-area'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ReactMarkdown from "react-markdown"
 import remarkGfm from 'remark-gfm'
 import { conversation } from '@/services/conversation'
@@ -13,19 +13,22 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "./ui/select";
 import { useForm } from 'react-hook-form'
 import { ButtonDefault } from './Button'
+import { addChat } from '@/stores/slices/chatSlice'
+import { nanoid } from '@reduxjs/toolkit'
 
 
 
-function ChatPage() {
+function SidePage() {
 
   const messages = useSelector((state) => state.chat.chats)
   const conversationId = useSelector((state) => state.conversation.activeConversationId)
   const [chats, setChats] = useState([])
   const bottomRef = useRef(null)
   const { startStreaming, stopStreaming, isStreaming } = useChatStream()
+  const dispatch = useDispatch()
 
   const [input, setInput] = useState("")
-  const { register, resetField, handleSubmit, setValue } = useForm({
+  const { register, resetField, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
       model: "gemma-3-27b-it"
     }
@@ -74,10 +77,30 @@ function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
+  const content = watch("content") || "";
+
+  const textareaRef = useRef(null);
+  const { ref: registerRef, ...rest } = register("content", { required: true });
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Reset height to calculate correctly
+      textareaRef.current.style.height = "56px";
+      // Set to scrollHeight
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 200)}px`;
+    }
+  }, [content]);
+
 
   const submitHandler = async (data) => {
-    // await startStreaming({ ...data, conversationId })
-    console.log(data);
+    dispatch(addChat({
+      _id: nanoid(),
+      conversationId,
+      content: data.content,
+      role: "user"
+    }))
+    await startStreaming({ ...data, conversationId })
 
     reset({ content: "", model: data.model });
   }
@@ -124,18 +147,37 @@ function ChatPage() {
                       );
                     },
                     // 2. Making links blue and hoverable
+                    h1: ({ children }) => (
+                      <h1 className="text-3xl font-bold mt-6 mb-4 tracking-tight">
+                        {children}
+                      </h1>
+                    ),
+
+                    // h2: Slightly smaller, often used for sections
+                    h2: ({ children }) => (
+                      <h2 className="text-2xl font-semibold mt-5 mb-3  pb-1 font-giest">
+                        {children}
+                      </h2>
+                    ),
+
+                    // h3: For sub-sections
+                    h3: ({ children }) => (
+                      <h3 className="text-xl font-medium mt-4 mb-2 ">
+                        {children}
+                      </h3>
+                    ),
                     a: ({ node, ...props }) => (
                       <a
                         {...props}
-                        className="text-blue-500 hover:underline cursor-pointer transition-colors"
+                        className="text-blue-500 hover:underline cursor-pointer transition-colors font-giest"
                         target="_blank"
                         rel="noopener noreferrer"
                       />
                     ),
                     // 3. Ensuring paragraphs in assistant messages have proper spacing
-                    p: ({ children }) => <p className="mb-4 last:mb-0 leading-7">{children}</p>,
-                    ul: ({ children }) => <ul className="list-disc ml-6 mb-4 space-y-2">{children}</ul>,
-                    ol: ({ children }) => <ol className="list-decimal ml-6 mb-4 space-y-2">{children}</ol>,
+                    p: ({ children }) => <p className="mb-4 last:mb-0 leading-7 font-giest">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc ml-6 mb-4 space-y-2 font-giest">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal ml-6 mb-4 space-y-2 font-giest">{children}</ol>,
                   }}
                 >
                   {chat.content}
@@ -151,11 +193,22 @@ function ChatPage() {
           {/* Container with relative positioning to host the button inside */}
           <form onSubmit={handleSubmit(submitHandler)}>
             <div className="relative flex items-center group">
-              <Input
-                onInput={(e) => setInput(e.target.value)}
+              <textarea
+                {...rest}
+                ref={(e) => {
+                  registerRef(e);
+                  textareaRef.current = e;
+                }}
+                rows={1}
                 placeholder="Ask anything"
-                className="w-full h-14 pl-6 pr-14 rounded-full border-zinc-800 placeholder:text-zinc-500 focus-visible:ring-1 focus-visible:ring-zinc-700 focus-visible:ring-offset-0 transition-all"
+                className="w-full min-h-12 max-h-50 pl-4 pr-40 py-3 rounded-full border-zinc-800 placeholder:text-zinc-500 focus-visible:ring-1 focus-visible:ring-zinc-700 focus-visible:ring-offset-0 transition-all resize-none overflow-y-auto custom-scrollbar focus:outline-none outline-1"
                 {...register("content", { required: true })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    e.currentTarget.form?.requestSubmit();
+                  }
+                }}
               />
 
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -172,8 +225,8 @@ function ChatPage() {
                 )}
                 <ButtonDefault
                   type={isStreaming ? "button" : "submit"}
-                  onClick={isStreaming ? onStop : undefined}
-                  disabled={!isStreaming && input.length === 0}
+                  onClick={isStreaming ? () => { stopStreaming() } : undefined}
+                  disabled={!isStreaming && content.trim().length === 0}
                   children={isStreaming ? <Square className="h-4 w-4 fill-current" /> : <Send className="h-4 w-4" />}
                   className="h-10 w-10 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white shadow-md transition-transform active:scale-95"
                 />
@@ -190,4 +243,4 @@ function ChatPage() {
   )
 }
 
-export default ChatPage
+export default SidePage

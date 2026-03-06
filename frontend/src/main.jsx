@@ -12,42 +12,97 @@ import VerifyEmail from './pages/authentication/VerifyEmail'
 import ForgotPasswordPage from './pages/authentication/ForgotPasswordPage'
 import VerifyForgotPasswordPage from './pages/authentication/VerifyForgotPasswordPage'
 import PasswordChangePage from './pages/authentication/PasswordChangePage'
+import SignupLoginPage from './pages/SignupLoginPage'
+import ChatPage from './pages/conversation/ChatPage'
+import AuthLogin from './components/AuthLogin'
+
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />
+    element: <App />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/chat" replace />,
+      },
+      {
+        path: "/chat",
+        element: (
+          <AuthLogin>
+            <ChatPage />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/home",
+        element: (
+          <AuthLogin authentication={false}>
+            <SignupLoginPage />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/login",
+        element: (
+          <AuthLogin authentication={false}>
+            <LoginPage />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/signup",
+        element: (
+          <AuthLogin authentication={false}>
+            <SignupPage />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/resetPassword",
+        element: (
+          <AuthLogin authentication={false}>
+            <ResetPasswordPage />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/forgotPassword",
+        element: (
+          <AuthLogin authentication={false}>
+            <ForgotPasswordPage />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/verify_email/:verificationToken",
+        element: (
+          <AuthLogin authentication={false}>
+            <VerifyEmail />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/verify_passwordToken/:verificationToken",
+        element: (
+          <AuthLogin authentication={false}>
+            <VerifyForgotPasswordPage />
+          </AuthLogin>
+        )
+      },
+      {
+        path: "/passwordChange/:verificationToken",
+        element: (
+          <AuthLogin authentication={false}>
+            <PasswordChangePage />
+          </AuthLogin>
+        )
+      }
+    ]
   },
-  {
-    path: "/login",
-    element: <LoginPage />
-  },
-  {
-    path: "/signup",
-    element: <SignupPage />
-  },
-  {
-    path: "/resetPassword",
-    element: <ResetPasswordPage />
-  },
-  {
-    path: "/forgotPassword",
-    element: <ForgotPasswordPage />
-  },
-  {
-    path: "/verify_email/:verificationToken",
-    element: <VerifyEmail />
-  },
-  {
-    path: "/verify_passwordToken/:verificationToken",
-    element: <VerifyForgotPasswordPage />
-  },
-  {
-    path: "/passwordChange/:verificationToken",
-    element: <PasswordChangePage />
-  }
+
 ])
 
 createRoot(document.getElementById('root')).render(

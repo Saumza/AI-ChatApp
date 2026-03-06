@@ -38,7 +38,7 @@ class conversationService {
 
     async update({ conversationId, title }) {
         try {
-            return await axios.patch(`${this.baseUrl}/${conversationId}`, { title })
+            return await axios.patch(`${this.baseUrl}/update_conversation/${conversationId}`, { title })
         } catch (error) {
             if (error.response) {
                 console.log("Update Error: ", error.response);

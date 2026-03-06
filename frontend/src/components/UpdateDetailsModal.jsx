@@ -16,7 +16,12 @@ function UpdateDetailsModal({ open, onOpenChange, updateSubmitHandler, updateHan
 
     const userData = useSelector((state) => state.auth.userData)
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            name: userData.name,
+            username: userData.username
+        }
+    })
 
     return (
         <div>
@@ -34,7 +39,6 @@ function UpdateDetailsModal({ open, onOpenChange, updateSubmitHandler, updateHan
                             <FieldContent>
                                 <InputField
                                     type="text"
-                                    value={"Saumyajeet"}
                                     classname="h-10 font-giest text-sm"
                                     {...register("name")}
                                 />
@@ -47,7 +51,6 @@ function UpdateDetailsModal({ open, onOpenChange, updateSubmitHandler, updateHan
                             <FieldContent>
                                 <InputField
                                     type="text"
-                                    value={"Sam"}
                                     classname="h-10 font-giest text-sm"
                                     {...register("username")}
                                 />

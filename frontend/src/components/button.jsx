@@ -13,11 +13,12 @@ export function ButtonDefault({
 
 export function ButtonAsChild({
     className,
-    children
+    children,
+    to
 }) {
     return (
         <Button asChild className={className}>
-            <Link href="/login">{children}</Link>
+            <Link to={to}>{children}</Link>
         </Button>
     )
 }

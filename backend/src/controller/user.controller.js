@@ -181,6 +181,10 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
 const updateUserDetails = asyncHandler(async (req, res) => {
     const { username, name } = req.body
+
+    console.log(username, name);
+
+
     const userId = req.user?._id
     const avatarLocalPath = req.file?.path
 
@@ -215,6 +219,9 @@ const updateUserDetails = asyncHandler(async (req, res) => {
             new: true
         }
     ).select("-password -avatarPublicId -oauth -isEmailVerified -refreshToken -emailVerificationToken -emailVerificationExpiry -forgotPasswordVerificationToken -forgotPasswordVerificationExpiry")
+
+    // console.log(user);
+
 
     return res
         .status(200)
@@ -325,7 +332,7 @@ const refreshToken = asyncHandler(async (req, res) => {
     }
 
 
-    const user = await User.findById(decodedToken._id)
+    const user = await User.findById(decodedToken._id).select("-password -avatarPublicId -oauth -isEmailVerified -emailVerificationToken -emailVerificationExpiry -forgotPasswordVerificationToken -forgotPasswordVerificationExpiry").lean()
 
     if (!user) {
         throw new APIError(401, "Invalid Refresh Token")
@@ -338,6 +345,8 @@ const refreshToken = asyncHandler(async (req, res) => {
         throw new APIError(403, "Account Theft")
     }
 
+    delete user.refreshToken
+
     const { accessToken, refreshToken } = await generateRefreshAndAccessToken(decodedToken._id)
 
     const options = {
@@ -349,7 +358,7 @@ const refreshToken = asyncHandler(async (req, res) => {
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
-            new APIResponse(200, {}, "Tokens Refresh Successfully")
+            new APIResponse(200, { user }, "Tokens Refresh Successfully")
         )
 })
 

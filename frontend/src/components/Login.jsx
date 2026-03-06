@@ -22,8 +22,8 @@ function Login() {
     const loginMutation = useMutation({
         mutationFn: (data) => authService.login(data),
         onSuccess: (response) => {
-            dispatch(login(response.data)),
-                navigate("/")  // NAVIGATION IS LEFT
+            dispatch(login(response.data.data)),
+                navigate("/chat")  // NAVIGATION IS LEFT
         },
         onError: (error) => {
             setError(error.message)
