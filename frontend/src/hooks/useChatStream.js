@@ -14,7 +14,7 @@ export function useChatStream() {
     const conversationId = useSelector((state) => state.conversation.activeConversationId)
 
 
-    async function startStreaming({ content, model, conversationId }) {
+    async function startStreaming({ content, model }) {
         const controller = new AbortController()
         controllerRef.current = controller
 
@@ -26,7 +26,17 @@ export function useChatStream() {
 
         let buffer = ""   // this buffer is being set for partial chunks
 
+
         try {
+            const chat_Doc = {
+                _id: temporaryContentId,
+                conversationId: conversationId,
+                content: "",
+                role: "model"
+            }
+            dispatch(addChat(chat_Doc))
+            setIsStreaming(true)
+
             const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify({
@@ -35,19 +45,13 @@ export function useChatStream() {
                     conversationId: conversationId || null
                 }),
                 headers: { "Content-Type": "application/json" },
-                signal: controller.signal,
+                credentials: "include",
+                signal: controller.signal
             })
 
-            setIsStreaming(true)
-
-            const chat_Doc = {
-                _id: temporaryContentId,
-                conversationId,
-                content: "",
-                role: "model"
+            if (response.status === 429 || response.status === 500) {
+                console.log(await response.json());
             }
-            dispatch(addChat(chat_Doc))
-
             for await (const text of response.body) {
                 // 1. Translate bytes to text
                 buffer += decoder.decode(text, { stream: true })
@@ -57,12 +61,14 @@ export function useChatStream() {
 
                 // setting the partial chunks even if there is no chunk then it will be set as empty
                 buffer = messages.pop()
+
                 let event = ""
                 let data = ""
                 // iteration over the message array
                 for (const line of messages) {
 
-                    const parts = message.split("\n")
+                    const parts = line.split("\n")
+                    console.log(parts);
 
                     if (line.trim() === "") {
                         dispatch(updateChat({
@@ -75,10 +81,14 @@ export function useChatStream() {
                     for (const part of parts) {
                         if (part.startsWith("event:")) {
                             event = part.replace("event:", "").trim()
+                            console.log(event);
+
                         }
 
                         if (part.startsWith("data:")) {
                             data = part.replace("data:", "")
+                            console.log(data);
+
                         }
                     }
 
@@ -107,11 +117,15 @@ export function useChatStream() {
             }
             setIsStreaming(false)
         } catch (error) {
+            if (error.name === "AbortError") {
+                console.log("Stream stopped by user");
+                return;   // exit startStreaming immediately
+            }
             console.log("Logging Error...", error);
         }
         finally {
             controllerRef.current = null
-            setIsStreaming = false;
+            setIsStreaming(false)
         }
     }
 
@@ -119,7 +133,7 @@ export function useChatStream() {
         if (controllerRef.current) {
             controllerRef.current.abort()
             controllerRef.current = null
-            isStreaming(false)
+            setIsStreaming(false)
         }
     }
 

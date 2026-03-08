@@ -37,6 +37,14 @@ const router = createBrowserRouter([
         )
       },
       {
+        path: "/c/:conversationId",
+        element: (
+          <AuthLogin>
+            <ChatPage />
+          </AuthLogin>
+        )
+      },
+      {
         path: "/home",
         element: (
           <AuthLogin authentication={false}>

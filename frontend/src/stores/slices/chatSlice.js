@@ -8,7 +8,7 @@ const chatSlice = createSlice({
     name: "chat",
     initialState,
     reducers: {
-        setChats: (state, action) => {
+        setAllChats: (state, action) => {
             state.chats = action.payload
         },
         addChat: (state, action) => {
@@ -29,5 +29,5 @@ const chatSlice = createSlice({
     }
 })
 
-export const { setChats, addChat, updateChat, finishChat } = chatSlice.actions
+export const { setAllChats, addChat, updateChat, finishChat } = chatSlice.actions
 export const chatReducer = chatSlice.reducer

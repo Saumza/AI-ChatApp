@@ -152,10 +152,10 @@ const chat = asyncHandler(async (req, res) => {
     }
 
     const history = await Chat.find({
-        conversationId,
-    })
-
-    console.log(history);
+        conversationId: new mongoose.Types.ObjectId(conversationId),
+    }).sort({ createdAt: 1 })
+        .limit(10);
+    // console.log(history);
 
 
     const contents = convertToContent(history)
@@ -184,6 +184,8 @@ const chat = asyncHandler(async (req, res) => {
     for await (const text of reply) {
         buffer += text
         res.write(`event: reply\ndata:${text}\n\n`)
+        console.log(text);
+
     }
 
     await Chat.create({

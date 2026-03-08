@@ -54,7 +54,7 @@ function SidebarComponent() {
             const response = await conversation.delete(conversationId)
             console.log(response);
             if (response) {
-                dispatch(deleteConversation(activeConversationId))
+                dispatch(deleteConversation(conversationId))
             }
         } catch (error) {
             console.log(error);

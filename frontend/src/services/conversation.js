@@ -53,7 +53,7 @@ class conversationService {
 
     async delete(conversationId) {
         try {
-            return await axios.delete(`${this.baseUrl}/${conversationId}`)
+            return await axios.delete(`${this.baseUrl}/delete_conversation/${conversationId}`)
         } catch (error) {
             if (error.response) {
                 console.log("Deletion Error: ", error.response);
