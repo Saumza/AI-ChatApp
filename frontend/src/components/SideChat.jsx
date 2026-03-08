@@ -46,6 +46,7 @@ function SidePage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [conversationId])
 
+  console.log(messages);
 
   const content = watch("content") || "";
 

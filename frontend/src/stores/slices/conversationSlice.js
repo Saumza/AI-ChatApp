@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     conversations: [],
-    activeConversationId: null
+    activeConversationId: null,
+    newConversationId: null
 }
 
 
@@ -29,6 +30,9 @@ const conversationSlice = createSlice({
         activeConversation: (state, action) => {
             state.activeConversationId = action.payload
         },
+        newConversation: (state, action) => {
+            state.newConversationId = action.payload
+        },
         sortedConversation: (state) => {
             [...state.conversations].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
         },
@@ -45,5 +49,5 @@ const conversationSlice = createSlice({
 })
 
 
-export const { activeConversation, addOrUpdateConversation, deleteConversation, setConversation, sortedConversation, updateConversation } = conversationSlice.actions
+export const { activeConversation, addOrUpdateConversation, deleteConversation, setConversation, sortedConversation, updateConversation, newConversation } = conversationSlice.actions
 export const conversationReducer = conversationSlice.reducer

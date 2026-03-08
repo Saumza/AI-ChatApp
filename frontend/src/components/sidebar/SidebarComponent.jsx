@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { Sidebar, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarInset, SidebarMenuAction, SidebarTrigger, SidebarHeader, SidebarFooter } from '../ui/Sidebar'
 import { conversation } from '../../services/conversation'
-import { activeConversation, setConversation, sortedConversation } from '@/stores/slices/conversationSlice'
+import { activeConversation, newConversation, setConversation, sortedConversation } from '@/stores/slices/conversationSlice'
 import NewChatDark from '../icon/NewChatDark'
 import NewChatLight from '../icon/NewChatLight'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../ui/dropdown-menu"
@@ -14,6 +14,7 @@ import { login, logout } from '@/stores/slices/authSlice'
 import { authService } from '@/services/authentication'
 import UpdateDetailsModal from '../UpdateDetailsModal'
 import { useMutation } from '@tanstack/react-query'
+import { setAllChats } from '@/stores/slices/chatSlice'
 
 
 function SidebarComponent() {
@@ -35,12 +36,8 @@ function SidebarComponent() {
     const [detailsError, setDetailsError] = useState()
 
     useEffect(() => {
-        if (conversationData) {
-            setConversations(conversationData)
-        }
         conversation.list().then((conversation) => {
             if (conversation) {
-                setConversations(conversation.data.data)
                 dispatch(setConversation(conversation.data.data))
             }
         }).catch(
@@ -54,7 +51,9 @@ function SidebarComponent() {
             const response = await conversation.delete(conversationId)
             console.log(response);
             if (response) {
-                dispatch(deleteConversation(conversationId))
+                dispatch(setAllChats([]))
+                dispatch(activeConversation(undefined))
+                navigate("/chat")
             }
         } catch (error) {
             console.log(error);
@@ -143,7 +142,12 @@ function SidebarComponent() {
                             asChild
                             className="w-full h-11 rounded-xl transition-all duration-200 hover:bg-accent/80 active:scale-95 group"
                         >
-                            <Link onClick={() => dispatch(activeConversation(null))} className="flex items-center gap-3 px-3">
+                            <Link onClick={() => {
+                                dispatch(activeConversation(null))
+                                dispatch(newConversation(null))
+                                dispatch(setAllChats([]))
+                                navigate(`/chat`)
+                            }} className="flex items-center gap-3 px-3">
                                 <div className="flex items-center justify-center transition-transform">
                                     <div className="block dark:hidden"><NewChatLight /></div>
                                     <div className="hidden dark:block"><NewChatDark /></div>
@@ -161,7 +165,7 @@ function SidebarComponent() {
 
 
                     {/* CONVERSATIONS */}
-                    {conversations.map((conversation) => (
+                    {conversationData.map((conversation) => (
                         <SidebarMenuItem key={conversation._id} className="relative">
                             <SidebarMenuButton asChild>
                                 <Link

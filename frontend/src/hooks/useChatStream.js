@@ -2,7 +2,7 @@ import { Chat } from "@/services/chat"
 import { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "@reduxjs/toolkit"
-import { activeConversation, addOrUpdateConversation } from "@/stores/slices/conversationSlice"
+import { activeConversation, addOrUpdateConversation, newConversation } from "@/stores/slices/conversationSlice"
 import { data } from "react-router"
 import { addChat, updateChat } from "@/stores/slices/chatSlice"
 
@@ -12,6 +12,7 @@ export function useChatStream() {
     const controllerRef = useRef(null)
     const userData = useSelector((state) => state.auth.userData)
     const conversationId = useSelector((state) => state.conversation.activeConversationId)
+    const newConversationId = useSelector((state) => state.conversation.newConversationId)
 
 
     async function startStreaming({ content, model }) {
@@ -30,7 +31,7 @@ export function useChatStream() {
         try {
             const chat_Doc = {
                 _id: temporaryContentId,
-                conversationId: conversationId,
+                conversationId: conversationId || newConversationId || null,
                 content: "",
                 role: "model"
             }
@@ -42,7 +43,7 @@ export function useChatStream() {
                 body: JSON.stringify({
                     content,
                     model,
-                    conversationId: conversationId || null
+                    conversationId: conversationId || newConversationId || null
                 }),
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -114,7 +115,7 @@ export function useChatStream() {
                     }
 
                     else if (event === "conversation") {
-                        dispatch(activeConversation(data))
+                        dispatch(newConversation(data))
                     }
                 }
             }

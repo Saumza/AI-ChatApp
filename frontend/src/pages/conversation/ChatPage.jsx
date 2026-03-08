@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router'
 
 function ChatPage() {
     const conversationId = useSelector((state) => state.conversation.activeConversationId)
+    const newConversationId = useSelector((state) => state.conversation.newConversationId)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -16,12 +17,18 @@ function ChatPage() {
         }
     }, [conversationId])
 
+    useEffect(() => {
+        if (newConversationId) {
+            navigate(`/c/${newConversationId}`)
+        }
+    }, [newConversationId])
+
     return (
         <SidebarProvider>
             <div className="flex h-screen w-screen overflow-hidden">
                 <SidebarComponent />
                 <SidebarInset className="flex flex-col flex-1">
-                    {conversationId
+                    {conversationId || newConversationId
                         ? < SidePage />
                         : <NewChat />
                     }

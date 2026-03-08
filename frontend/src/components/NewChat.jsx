@@ -16,7 +16,7 @@ function NewChat() {
     const dispatch = useDispatch()
 
     const [input, setInput] = useState("")
-    const { register, resetField, handleSubmit, setValue, watch } = useForm({
+    const { register, resetField, handleSubmit, setValue, watch, reset } = useForm({
         defaultValues: {
             model: "gemma-3-27b-it"
         }
@@ -40,11 +40,10 @@ function NewChat() {
     const submitHandler = async (data) => {
         dispatch(addChat({
             _id: nanoid(),
-            conversationId,
             content: data.content,
             role: "user"
         }))
-        await startStreaming({ ...data, conversationId })
+        await startStreaming({ ...data })
 
         reset({ content: "", model: data.model });
     }
