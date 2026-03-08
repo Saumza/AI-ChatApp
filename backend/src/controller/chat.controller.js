@@ -72,7 +72,7 @@ const chat = asyncHandler(async (req, res) => {
     const userId = req.user?._id
 
     const { model, content, conversationId } = req.body
-
+    const controller = new AbortController();
 
     const provider = apiProvidersFinder(model)
     const api = apiProviders[provider]
@@ -122,17 +122,25 @@ const chat = asyncHandler(async (req, res) => {
             parts: [{ text: content }]
         }]
 
+        res.on("close", () => {
+            console.log("Client disconnected, stopping AI generation")
+            controller.abort()
+        })
+
         let replyBuffer = ""
         const reply = await api.messageStream(
             model,
             contents,
             systemPrompt,
+            controller.signal
         )
 
         console.log("Reached generate reply stream");
 
         for await (const text of reply) {
             // if (!text || text.trim() === "") continue;
+            if (controller.signal.aborted) break
+            if (res.writableEnded) break
             replyBuffer += text
             res.write(`event: reply\ndata:${text}\n\n`)
             console.log(text);
@@ -175,18 +183,29 @@ const chat = asyncHandler(async (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
+
+    res.on("close", () => {
+        console.log("Client disconnected, stopping AI generation")
+        controller.abort()
+    })
+
     let buffer = ""
     const reply = await api.messageStream(
         model,
-        contents
+        contents,
+        null,
+        controller.signal
     )
 
+
     for await (const text of reply) {
+        if (controller.signal.aborted) break
+        if (res.writableEnded) break
+
         buffer += text
         res.write(`event: reply\ndata:${text}\n\n`)
-        console.log(text);
-
     }
+    console.log(buffer);
 
     await Chat.create({
         conversationId,

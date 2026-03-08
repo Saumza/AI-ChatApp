@@ -50,7 +50,10 @@ export function useChatStream() {
             })
 
             if (response.status === 429 || response.status === 500) {
-                console.log(await response.json());
+                const errorData = await response.json();
+                console.error("Backend Error:", errorData);
+                setIsStreaming(false);
+                return
             }
             for await (const text of response.body) {
                 // 1. Translate bytes to text

@@ -7,7 +7,7 @@ const ai = new GoogleGenAI({
 
 
 // 
-const messageStream = async function* (model, contents, systemPrompt) {
+const messageStream = async function* (model, contents, systemPrompt, signal) {
 
     let payload = {}
 
@@ -25,10 +25,16 @@ const messageStream = async function* (model, contents, systemPrompt) {
     const response = await ai.models.generateContentStream({
         model,
         systemInstruction: payload.systemInstruction,
-        contents: payload.contents
+        contents: payload.contents,
+        signal
     })
 
     for await (const chunk of response) {
+        if (signal?.aborted) {
+            console.log("AI stream aborted")
+            break
+        }
+
         if (chunk.text) {
             yield chunk.text
         }
