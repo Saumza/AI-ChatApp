@@ -6,17 +6,19 @@ class authentication {
     }
     async createAccount(formdata) {
         try {
-            const userAccount = await axios.post(`${this.baseUrl}/register`, formdata, {
+            const response = await axios.post(`${this.baseUrl}/register`, formdata, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             })
-            if (userAccount) {
-                return this.login({ email: formdata.email, password: formdata.password })
+
+            if (response) {
+                return await this.login({
+                    email: formdata.get('email'),
+                    password: formdata.get('password')
+                })
             }
-            else {
-                return userAccount
-            }
+
         } catch (error) {
             if (error.response) {
                 console.log("Create Account Error: ", error.response);
@@ -31,7 +33,7 @@ class authentication {
 
     async verifyEmail({ verificationToken }) {
         try {
-            return await axios.post(`${this.baseUrl}/verify_email/${verificationToken}`)
+            return await axios.patch(`${this.baseUrl}/verify_email/${verificationToken}`)
         } catch (error) {
             if (error.response) {
                 console.log("Email Verification Error: ", error.response);

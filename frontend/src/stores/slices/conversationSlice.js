@@ -13,7 +13,9 @@ const conversationSlice = createSlice({
     initialState,
     reducers: {
         setConversation: (state, action) => {
-            state.conversations = action.payload
+            if (action.payload.length > 0) {
+                state.conversations = action.payload
+            }
         },
         addOrUpdateConversation: (state, action) => {
             const index = state.conversations.findIndex((conversation) => conversation._id === action.payload._id)

@@ -8,10 +8,13 @@ import { Badge } from '@/components/ui/badge'
 function VerifyEmail() {
 
     const { verificationToken } = useParams()
+
+    console.log(verificationToken);
+
     const navigate = useNavigate()
     const { isError, isSuccess, error } = useQuery({
         queryKey: ["verify_email", verificationToken],
-        queryFn: () => authService.verifyEmail(verificationToken)
+        queryFn: () => authService.verifyEmail({verificationToken})
     })
 
     useEffect(() => {

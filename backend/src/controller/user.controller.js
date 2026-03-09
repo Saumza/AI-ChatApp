@@ -64,7 +64,7 @@ const userRegistration = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false })
 
 
-    const verificationMailContent = verificationMailgenContent(username, `${req.protocol}://${req.host}/verifyEmail/:${hashedToken}`)
+    const verificationMailContent = verificationMailgenContent(username, `${req.protocol}://localhost:5173/verify_email/${hashedToken}`)
 
     await sendEmail(
         email,

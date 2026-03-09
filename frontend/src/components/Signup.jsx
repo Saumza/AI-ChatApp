@@ -29,8 +29,10 @@ function SignUp() {
             }
         },
         onSuccess: (response) => {
-            dispatch(login(response.data))
-            navigate("/")  // NAVIGATION IS LEFT
+            console.log(response.data.data);
+            dispatch(login(response.data.data))
+            
+            navigate("/") 
         },
         onError: (error) => {
             setError(error.message)
@@ -42,7 +44,7 @@ function SignUp() {
         const formdata = new FormData()
 
         formdata.append("name", data.name)
-        formdata.append("usename", data.name)
+        formdata.append("username", data.username)
         formdata.append("email", data.email)
         formdata.append("password", data.password)
         formdata.append("avatar", data.avatar[0])

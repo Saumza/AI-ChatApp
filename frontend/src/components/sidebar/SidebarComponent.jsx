@@ -165,65 +165,67 @@ function SidebarComponent() {
 
 
                     {/* CONVERSATIONS */}
-                    {conversationData.map((conversation) => (
-                        <SidebarMenuItem key={conversation._id} className="relative">
-                            <SidebarMenuButton asChild>
-                                <Link
-                                    to={`/c/${conversation._id}`}
-                                    className="flex items-center gap-2"
-                                    onClick={() => dispatch(activeConversation(conversation._id))}
-                                >
-                                    <span className="group-data-[collapsible=icon]:hidden font-giest font-medium text-[.9]">
-                                        {conversation.title}
-                                    </span>
-                                </Link>
-                            </SidebarMenuButton>
-
-                            {/* DROPDOWN */}
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <SidebarMenuAction
-                                        showOnHover
-                                        onClick={(e) => e.stopPropagation()}
+                    {conversationData ?
+                        conversationData.map((conversation) => (
+                            <SidebarMenuItem key={conversation._id} className="relative">
+                                <SidebarMenuButton asChild>
+                                    <Link
+                                        to={`/c/${conversation._id}`}
+                                        className="flex items-center gap-2"
+                                        onClick={() => dispatch(activeConversation(conversation._id))}
                                     >
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </SidebarMenuAction>
-                                </DropdownMenuTrigger>
-
-                                <DropdownMenuContent
-                                    align="end"
-                                    side="right"
-                                    className="w-48 rounded-md shadow-lg"
-                                >
-                                    <DropdownMenuItem onClick={(e) => {
-                                        e.stopPropagation()
-                                        deleteHandler(conversation._id)
-                                    }}>
-                                        <Trash className="w-4 h-4 mr-2" />
-                                        <span className='font-giest text-[.875rem]'>
-                                            Delete
+                                        <span className="group-data-[collapsible=icon]:hidden font-giest font-medium text-[.9]">
+                                            {conversation.title}
                                         </span>
-                                    </DropdownMenuItem>
+                                    </Link>
+                                </SidebarMenuButton>
 
-                                    <DropdownMenuItem onClick={(e) => {
-                                        e.stopPropagation()
-                                        renameHandler(conversation)
-                                    }}>
-                                        <Pencil className="w-4 h-4 mr-2" />
-                                        <span className='font-giest text-[.875rem]'>
-                                            Rename
-                                        </span>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                            <RenameModal
-                                open={openRenameModal}
-                                onOpenChange={() => setOpenRenameModal(false)}
-                                title={selectedTitle}
-                                conversationId={selectedId}
-                            />
-                        </SidebarMenuItem>
-                    ))}
+                                {/* DROPDOWN */}
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <SidebarMenuAction
+                                            showOnHover
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <MoreHorizontal className="w-4 h-4" />
+                                        </SidebarMenuAction>
+                                    </DropdownMenuTrigger>
+
+                                    <DropdownMenuContent
+                                        align="end"
+                                        side="right"
+                                        className="w-48 rounded-md shadow-lg"
+                                    >
+                                        <DropdownMenuItem onClick={(e) => {
+                                            e.stopPropagation()
+                                            deleteHandler(conversation._id)
+                                        }}>
+                                            <Trash className="w-4 h-4 mr-2" />
+                                            <span className='font-giest text-[.875rem]'>
+                                                Delete
+                                            </span>
+                                        </DropdownMenuItem>
+
+                                        <DropdownMenuItem onClick={(e) => {
+                                            e.stopPropagation()
+                                            renameHandler(conversation)
+                                        }}>
+                                            <Pencil className="w-4 h-4 mr-2" />
+                                            <span className='font-giest text-[.875rem]'>
+                                                Rename
+                                            </span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                                <RenameModal
+                                    open={openRenameModal}
+                                    onOpenChange={() => setOpenRenameModal(false)}
+                                    title={selectedTitle}
+                                    conversationId={selectedId}
+                                />
+                            </SidebarMenuItem>
+                        ))
+                        : null}
                 </SidebarMenu>
                 <SidebarFooter className="mt-auto">
                     <DropdownMenu>
@@ -245,14 +247,14 @@ function SidebarComponent() {
                             className="w-fit rounded-xl p-0 overflow-hidden">
                             <div className="flex items-center gap-3 p-3 border-b">
                                 <img
-                                    src="https://i.pinimg.com/736x/9d/3a/61/9d3a61e9a5c55ea8d0ae413ce0986753.jpg"
+                                    src={userData.avatar}
                                     className="w-10 h-10 rounded-full object-cover"
                                     alt="avatar"
                                 />
 
                                 <div>
-                                    <p className="font-medium font-giest text-[0.9rem]">saumyajeet</p>
-                                    <p className="text-xs font-giest text-muted-foreground">s@gmail.com</p>
+                                    <p className="font-medium font-giest text-[0.9rem]">{userData.username}</p>
+                                    <p className="text-xs font-giest text-muted-foreground">{userData.email}</p>
                                 </div>
                             </div>
                             <DropdownMenuItem className="px-4 py-2 gap-0" onClick={() => setOpenUpdateModal(true)}>
