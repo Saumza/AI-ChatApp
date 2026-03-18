@@ -1,0 +1,27 @@
+version: '5.2'
+
+services:
+  server:
+    image: chatapp_backend
+    build: ./backend
+    container_name: express_server
+    ports:
+      - "8000:8000"
+    networks:
+      - fullstack
+    restart: unless-stopped
+  client:
+    image: chatapp_frontend
+    build: ./frontend
+    container_name: react_client
+    depends_on:
+      - server
+    ports: 
+      - "3000:5173"
+    networks:
+      - fullstack
+    restart: unless-stopped
+
+networks:
+  fullstack:
+    driver: bridge
