@@ -17,7 +17,7 @@ services:
     depends_on:
       - server
     ports: 
-      - "3000:5173"
+      - "3001:3000"
     networks:
       - fullstack
     restart: unless-stopped
