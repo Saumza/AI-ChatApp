@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { SidebarInset, SidebarProvider } from './ui/Sidebar'
-import { ScrollArea } from './ui/scroll-area'
+import { SidebarInset, SidebarProvider } from './ui/sidebar.jsx'
+import { ScrollArea } from './ui/scroll-area.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactMarkdown from "react-markdown"
 import remarkGfm from 'remark-gfm'

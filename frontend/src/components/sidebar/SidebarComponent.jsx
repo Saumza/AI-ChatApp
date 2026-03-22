@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
-import { Sidebar, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarInset, SidebarMenuAction, SidebarTrigger, SidebarHeader, SidebarFooter } from '../ui/Sidebar'
+import { Sidebar, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarInset, SidebarMenuAction, SidebarTrigger, SidebarHeader, SidebarFooter } from '../ui/sidebar.jsx'
 import { conversation } from '../../services/conversation'
 import { activeConversation, newConversation, setConversation, sortedConversation } from '@/stores/slices/conversationSlice'
 import NewChatDark from '../icon/NewChatDark'
