@@ -4,7 +4,7 @@ import { RenameModal } from './components/RenameModal.jsx'
 import Login from './components/Login.jsx'
 import SignUp from './components/Signup.jsx'
 import UpdateDetailsModal from './components/UpdateDetailsModal.jsx'
-import { SidebarProvider, SidebarInset } from "./components/ui/Sidebar.jsx"
+import { SidebarProvider, SidebarInset } from "./components/ui/sidebar.jsx"
 import SidePage from './components/SideChat.jsx'
 import SignupPage from './pages/SignupLoginPage.jsx'
 import NewChat from './components/NewChat.jsx'
