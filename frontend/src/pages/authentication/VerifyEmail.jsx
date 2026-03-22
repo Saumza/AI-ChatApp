@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import { authService } from '@/services/authentication'
-import { Spinner } from '../../components/ui/spinner'
+import { Spinner } from '@/components/ui/spinner'
 import { Badge } from '@/components/ui/badge'
 
 function VerifyEmail() {

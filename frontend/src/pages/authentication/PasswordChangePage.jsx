@@ -1,14 +1,14 @@
 import React from 'react'
-import { ButtonDefault } from '../../components/Button'
-import { InputField } from '../../components/Input'
+import { ButtonDefault } from '@/components/Button'
+import { InputField } from '@/components/Input'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { authService } from '@/services/authentication'
 import { login } from '@/stores/slices/authSlice'
-import { Field, FieldLabel, FieldContent, FieldError } from '../../components/ui/field'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../components/ui/card'
+import { Field, FieldLabel, FieldContent, FieldError } from '@/components/ui/field'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link, useNavigate } from 'react-router'
-import { Spinner } from '../../components/ui/spinner'
+import { Spinner } from '@/components/ui/spinner'
 
 function PasswordChangePage() {
 
