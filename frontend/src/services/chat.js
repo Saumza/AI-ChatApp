@@ -5,7 +5,7 @@ class chat {
         this.baseURL = baseURL
     }
     url() {
-        return `http://localhost:8000${this.baseURL}/chat`
+        return `${String(import.meta.env.VITE_API_URL)}${this.baseURL}/chat`
     }
 }
 
