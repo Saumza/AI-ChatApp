@@ -4,6 +4,8 @@ services:
   server:
     image: chatapp_backend
     build: ./backend
+    env_file:
+      - ./backend/.env
     container_name: express_server
     ports:
       - "8000:8000"
@@ -12,11 +14,15 @@ services:
     restart: unless-stopped
   client:
     image: chatapp_frontend
-    build: ./frontend
+    build:
+      context: ./frontend
+      # Passes the env to the ARG at the dockerfile during the build process
+      args:
+        - VITE_API_URL=${VITE_API_URL}
     container_name: react_client
     depends_on:
       - server
-    ports: 
+    ports:
       - "3001:3000"
     networks:
       - fullstack

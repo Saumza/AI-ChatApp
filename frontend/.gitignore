@@ -33,4 +33,5 @@ yarn-error.log*
 
 # Optional npm cache directory
 .npm
-
+.gitignore
+.dockerignore
