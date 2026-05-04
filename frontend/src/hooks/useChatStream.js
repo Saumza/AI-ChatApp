@@ -2,7 +2,7 @@ import { Chat } from "@/services/chat"
 import { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "@reduxjs/toolkit"
-import { activeConversation, addOrUpdateConversation, newConversation } from "@/stores/slices/conversationSlice"
+import { activeConversation, addOrUpdateConversation, newConversation, sortedConversation } from "@/stores/slices/conversationSlice"
 import { data } from "react-router"
 import { addChat, updateChat } from "@/stores/slices/chatSlice"
 
@@ -100,7 +100,8 @@ export function useChatStream() {
                         const conversationDoc = {
                             _id: temporaryTitleId,
                             userId: userData._id,
-                            title: data
+                            title: data,
+                            updatedAt: new Date().toISOString()
                         }
                         dispatch(addOrUpdateConversation(conversationDoc))
                     }
@@ -119,6 +120,12 @@ export function useChatStream() {
                     }
                 }
             }
+            const conversationDoc = {
+                _id: conversationId,
+                updatedAt: new Date().toISOString()
+            }
+            dispatch(addOrUpdateConversation(conversationDoc))
+            dispatch(sortedConversation())
             setIsStreaming(false)
         } catch (error) {
             if (error.name === "AbortError") {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { Sidebar, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarInset, SidebarMenuAction, SidebarTrigger, SidebarHeader, SidebarFooter } from '../ui/sidebar.jsx'
@@ -22,10 +22,12 @@ function SidebarComponent() {
     const conversationData = useSelector((state) => state.conversation.conversations)
     const userData = useSelector((state) => state.auth.userData)
     const activeConversationId = useSelector((state) => state.conversation.activeConversationId)
+    const newConversationId = useSelector((state) => state.conversation.newConversationId)
     const [conversations, setConversations] = useState([])
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
+    console.log("SIDEBAR");
 
     const [openRenameModal, setOpenRenameModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
@@ -36,6 +38,7 @@ function SidebarComponent() {
     const [detailsError, setDetailsError] = useState()
 
     useEffect(() => {
+        console.log("SIDEBAR: INSIDE THE USEEFFECT");
         conversation.list().then((conversation) => {
             if (conversation) {
                 dispatch(setConversation(conversation.data.data))
@@ -43,7 +46,7 @@ function SidebarComponent() {
         }).catch(
             (error) => console.log(error)
         )
-    }, [conversationData])
+    }, [dispatch])
 
 
     const deleteHandler = async (conversationId) => {
@@ -53,6 +56,7 @@ function SidebarComponent() {
             if (response) {
                 dispatch(setAllChats([]))
                 dispatch(activeConversation(undefined))
+                dispatch(deleteConversation(conversationId))
                 navigate("/chat")
             }
         } catch (error) {
