@@ -25,9 +25,7 @@ function SidebarComponent() {
     const newConversationId = useSelector((state) => state.conversation.newConversationId)
     const [conversations, setConversations] = useState([])
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-
-    console.log("SIDEBAR");
+    const navigate = useNavigate();
 
     const [openRenameModal, setOpenRenameModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
@@ -38,7 +36,6 @@ function SidebarComponent() {
     const [detailsError, setDetailsError] = useState()
 
     useEffect(() => {
-        console.log("SIDEBAR: INSIDE THE USEEFFECT");
         conversation.list().then((conversation) => {
             if (conversation) {
                 dispatch(setConversation(conversation.data.data))
