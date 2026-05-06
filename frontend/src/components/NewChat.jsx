@@ -18,7 +18,7 @@ function NewChat() {
     const [input, setInput] = useState("")
     const { register, resetField, handleSubmit, setValue, watch, reset } = useForm({
         defaultValues: {
-            model: "gemma-3-27b-it"
+            model: "gemini-2.5-flash-lite"
         }
     })
 
@@ -75,12 +75,12 @@ function NewChat() {
                         {/* BUTTON CONTAINER - ABSOLUTE RIGHT */}
                         <div className="absolute right-3 bottom-3 flex items-center gap-2">
                             {!isStreaming && (
-                                <Select onValueChange={(val) => setValue("model", val)} defaultValue="gemma-3-27b-it">
+                                <Select onValueChange={(val) => setValue("model", val)} defaultValue="gemini-2.5-flash-lite">
                                     <SelectTrigger className="h-8 w-28 rounded-full border-zinc-700  text-[11px] focus:ring-0">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className=" border-zinc-700 ">
-                                        <SelectItem value="gemma-3-27b-it">gemma-3-27b-it</SelectItem>
+                                        <SelectItem value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</SelectItem>
                                     </SelectContent>
                                 </Select>
                             )}

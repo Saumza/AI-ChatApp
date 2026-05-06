@@ -39,7 +39,7 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isStreaming, mode
                                 <SelectValue placeholder="Model" />
                             </SelectTrigger>
                             <SelectContent className="bg-white border-gray-200 text-gray-700 shadow-xl">
-                                <SelectItem value="gemma-3-27b-it" className="focus:bg-gray-100">gemma-3-27b-it</SelectItem>
+                                <SelectItem value="gemini-2.5-flash-lite" className="focus:bg-gray-100">gemini-2.5-flash-lite</SelectItem>
                             </SelectContent>
                         </Select>
                     )}
